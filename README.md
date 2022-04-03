@@ -8,8 +8,8 @@ package main
 
 import (
 	"fmt"
-	"generics/sets"
-	"generics/slices"
+	"github.com/goiste/generics/sets"
+	"github.com/goiste/generics/slices"
 )
 
 func main() {
