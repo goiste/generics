@@ -170,6 +170,18 @@ func TestIntersect(t *testing.T) {
 	}
 }
 
+func TestSafeSlice(t *testing.T) {
+	arr := Copy(stringSlice)
+
+	r := SafeSlice(arr, 1, 3)
+
+	arr[1] = "new"
+
+	if r[0] != "two" {
+		t.Errorf(errorFormat, r, []string{"two", "three"})
+	}
+}
+
 func TestSplit(t *testing.T) {
 	tests := []struct {
 		name      string
@@ -382,7 +394,12 @@ func TestFormat(t *testing.T) {
 		exp    []string
 	}{
 		{name: "empty", input: []float64{}, exp: []string{}},
-		{name: "123", input: []float64{0.000001, 0.02, 0.300000003}, format: "%.2f", exp: []string{"0.00", "0.02", "0.30"}},
+		{
+			name:   "123",
+			input:  []float64{0.000001, 0.02, 0.300000003},
+			format: "%.2f",
+			exp:    []string{"0.00", "0.02", "0.30"},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

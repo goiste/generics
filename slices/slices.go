@@ -109,6 +109,16 @@ func Intersect[T comparable](s []T, others ...[]T) []T {
 	return result
 }
 
+// SafeSlice
+// returns slice of slice via copy
+func SafeSlice[T any](s []T, from, to int) []T {
+	if to > len(s) {
+		to = len(s)
+	}
+
+	return Copy(s[from:to])
+}
+
 // Split
 // splits a given slice into parts by `partSize` elements
 func Split[T any](s []T, partSize int) [][]T {
@@ -117,19 +127,15 @@ func Split[T any](s []T, partSize int) [][]T {
 	}
 
 	if len(s) <= partSize {
-		return [][]T{s}
+		return [][]T{SafeSlice(s, 0, len(s))}
 	}
 
-	count := int(math.Ceil(float64(len(s)) / float64(partSize)))
-	result := make([][]T, count)
+	length := int(math.Ceil(float64(len(s)) / float64(partSize)))
 
-	for i := 0; i < count; i++ {
-		from := partSize * i
-		to := from + partSize
-		if to > len(s) {
-			to = len(s)
-		}
-		result[i] = s[from:to]
+	result := make([][]T, length)
+
+	for i := 0; i < length; i++ {
+		result[i] = SafeSlice(s, i*partSize, (i+1)*partSize)
 	}
 
 	return result
